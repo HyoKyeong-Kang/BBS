@@ -16,7 +16,20 @@ request.setCharacterEncoding("UTF-8");
 <title>JSP 게시판 웹 사이트</title>
 </head>
 <body>
-	<%
+	<% String userID = null;
+	if(session.getAttribute("userID") !=null) {
+		userID = (String) session.getAttribute("userID");
+	}
+	if (userID != null){
+		PrintWriter script = response.getWriter();
+		script.println("<script>");
+		script.println("alert('이미 로그인 되었습니다.')");
+		script.println("location.href = 'main.jsp'");   //메인 페이지로 이동
+		script.println("</script>");
+		
+	}
+	
+	
 	UserDAO userDAO = new UserDAO();
 	int result = userDAO.login(user.getUserID(), user.getUserPassword());
 	if (result == 1) {
