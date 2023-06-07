@@ -19,8 +19,9 @@ request.setCharacterEncoding("UTF-8");
 	<% String userID = null;
 	if(session.getAttribute("userID") !=null) {
 		userID = (String) session.getAttribute("userID");
-	}
+	} 
 	if (userID != null){
+		
 		PrintWriter script = response.getWriter();
 		script.println("<script>");
 		script.println("alert('이미 로그인 되었습니다.')");
@@ -33,6 +34,7 @@ request.setCharacterEncoding("UTF-8");
 	UserDAO userDAO = new UserDAO();
 	int result = userDAO.login(user.getUserID(), user.getUserPassword());
 	if (result == 1) {
+		session.setAttribute("userID", user.getUserID());
 		PrintWriter script = response.getWriter();
 		script.println("<script>");
 		script.println("location.href = 'main.jsp'");
@@ -41,6 +43,7 @@ request.setCharacterEncoding("UTF-8");
 		PrintWriter script = response.getWriter();
 		script.println("<script>");
 		script.println("alert('비밀번호가 틀립니다.')");
+		script.println("history.back()");
 		script.println("</script>");
 	} else if (result == -1) {
 		PrintWriter script = response.getWriter();
