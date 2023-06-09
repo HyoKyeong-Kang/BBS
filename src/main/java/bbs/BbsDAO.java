@@ -1,5 +1,8 @@
 package bbs;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -144,4 +147,51 @@ public class BbsDAO {
 		}
 		return -1;
 	}
-}
+	
+	public int update(String bbsTitle, String bbsContent, int bbsID) {
+		Bbs bbs = getBbs(bbsID);
+		String SQL = "UPDATE BBS SET bbsTitle = ?, bbsContent = ? WHERE bbsID = ?";
+		
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, bbsTitle);
+			pstmt.setString(2, bbsContent);
+			pstmt.setInt(3, bbs.getBbsID());
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	public int delete(int bbsID) {
+		String SQL = "UPDATE BBS SET bbsAvailable = 0 WHERE bbsID = ?";
+		System.out.println("여기 동작하나"+bbsID);
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, bbsID);
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	public int getFileBbsID(String fileName) {
+	    String SQL = "SELECT bf.bbsID FROM bbs_file bf JOIN bbs b ON bf.bbsID = b.bbsID WHERE bf.fileName = ?";
+	    try {
+	        PreparedStatement pstmt = conn.prepareStatement(SQL);
+	        pstmt.setString(1, fileName);
+	        ResultSet rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            return rs.getInt("bbsID");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return -1;
+	}
+
+	
+    }
+
